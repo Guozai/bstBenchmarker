@@ -132,23 +132,70 @@ public class multisetBenchmarker {
                     usage();
             }
 
-        LinkedListMultiset doubleLinked = new LinkedListMultiset();
+            LinkedListMultiset doubleLinked = new LinkedListMultiset();
+            SortedLinkedListMultiset sortedList = new SortedLinkedListMultiset();
+            BstMultiset bst = new BstMultiset();
+            HashMultiset hash = new HashMultiset();
+            BalTreeMultiset bal = new BalTreeMultiset();
 
-        // print out samples
-        if (samples != null) {
-            long startTime = System.nanoTime();
+            // print out samples
+            if (samples != null) {
+                long startTime = System.nanoTime();
 
-            for (int i = 0; i < samples.length; i++) {
-                doubleLinked.add(samples[i]);
+                for (int i = 0; i < samples.length; i++) {
+                    doubleLinked.add(samples[i]);
+                }
+                doubleLinked.search(samples[3]);
+
+                long endTime = System.nanoTime();
+                System.out.println("Double Linked List:");
+                System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
+                //////////////////////////////////
+                startTime = System.nanoTime();
+
+                for (int i = 0; i < samples.length; i++) {
+                    sortedList.add(samples[i]);
+                }
+                sortedList.search(samples[3]);
+
+                endTime = System.nanoTime();
+                System.out.println("Sorted Linked List:");
+                System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
+                //////////////////////////////////
+                startTime = System.nanoTime();
+
+                for (int i = 0; i < samples.length; i++) {
+                    bst.add(samples[i]);
+                }
+                bst.search(samples[3]);
+
+                endTime = System.nanoTime();
+                System.out.println("Binary Search Tree:");
+                System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
+                //////////////////////////////////
+                startTime = System.nanoTime();
+
+                for (int i = 0; i < samples.length; i++) {
+                    hash.add(samples[i]);
+                }
+                hash.search(samples[3]);
+
+                endTime = System.nanoTime();
+                System.out.println("Hash Map:");
+                System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
+                //////////////////////////////////
+                startTime = System.nanoTime();
+
+                for (int i = 0; i < samples.length; i++) {
+                    bal.add(samples[i]);
+                }
+                bal.search(samples[3]);
+
+                endTime = System.nanoTime();
+                System.out.println("Balanced Tree:");
+                System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
             }
-            doubleLinked.search(samples[3]);
-
-            long endTime = System.nanoTime();
-
-            System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
         }
-
-    }
 		catch (Exception e) {
             System.err.println(e.getMessage());
             usage();
