@@ -117,6 +117,12 @@ public class multisetBenchmarker {
 
             multisetBenchmarker bench = new multisetBenchmarker(startOfRange, endOfRange);
 
+            LinkedListMultiset doubleLinked = new LinkedListMultiset();
+            SortedLinkedListMultiset sortedList = new SortedLinkedListMultiset();
+            BstMultiset bst = new BstMultiset();
+            HashMultiset hash = new HashMultiset();
+            BalTreeMultiset bal = new BalTreeMultiset();
+
             int[] samples = null;
             switch (samplingType) {
                 // sampling with replacement
@@ -132,71 +138,466 @@ public class multisetBenchmarker {
                     usage();
             }
 
-            LinkedListMultiset doubleLinked = new LinkedListMultiset();
-            SortedLinkedListMultiset sortedList = new SortedLinkedListMultiset();
-            BstMultiset bst = new BstMultiset();
-            HashMultiset hash = new HashMultiset();
-            BalTreeMultiset bal = new BalTreeMultiset();
-
             // print out samples
             if (samples != null) {
-                long startTime = System.nanoTime();
+                long startTime, endTime, timeSaver, maxTime, minTime, totalTime;
 
+                // Scenario 4 many add and many delete without search
+                //---------------------------------------------------
+
+//                    // initial run
+//                    for (int i = 0; i < samples.length; i++) {
+//                        doubleLinked.add(samples[i]);
+//                    }
+//                    startTime = System.nanoTime();
+//                    for (int k = 0; k < 1000; ++k) {
+//                        for (int i = 0; i < samples.length; i++) {
+//                            doubleLinked.removeOne(samples[i]);
+//                            doubleLinked.add(samples[i]);
+//                        }
+//                    }
+//                    endTime = System.nanoTime();
+//                    timeSaver = minTime = maxTime = totalTime = endTime - startTime;
+//
+//                    // add remove for 1000 times, run for 29 times to get an average run time
+//                    for (int j = 0; j < 29; j++) {
+//                        startTime = System.nanoTime();
+//                        for (int k = 0; k < 1000; ++k) {
+//                            for (int i = 0; i < samples.length; i++) {
+//                                doubleLinked.removeOne(samples[i]);
+//                                doubleLinked.add(samples[i]);
+//                            }
+//                        }
+//                        endTime = System.nanoTime();
+//                        timeSaver = endTime - startTime;
+//                        totalTime += timeSaver;
+//                        if (timeSaver < minTime) {
+//                            minTime = timeSaver;
+//                        }
+//                        if (timeSaver > maxTime) {
+//                            maxTime = timeSaver;
+//                        }
+//                    }
+//                    System.out.println("Double Linked List:");
+//                    System.out.println("minimum time taken: " + ((double)minTime) / Math.pow(10, 9) + " seconds");
+//                    System.out.println("time taken = " + ((double)totalTime) / (30 * Math.pow(10, 9)) + " sec");
+//                    System.out.println("maximum time taken: " + ((double)maxTime) / Math.pow(10, 9) + " seconds");
+//                    System.out.println("-----------------------------------------------------------------------");
+//                    //////////////////////////////////
+////                startTime = System.nanoTime();
+////                // run for 30 times
+////                for (int j = 0; j < 30; j++) {
+////                    for (int i = 0; i < samples.length; i++) {
+////                        sortedList.add(samples[i]);
+////                    }
+//////                    sortedList.removeOne(samples[2]);
+//////                    sortedList.removeAll(samples[3]);
+////                }
+////                sortedList.search(samples[3]);
+////                endTime = System.nanoTime();
+////                System.out.println("Sorted Linked List:");
+////                System.out.println("time taken = " + ((double)(endTime - startTime)) / (30 * Math.pow(10, 9)) + " sec");
+//                    //////////////////////////////////
+//                    // initial run
+//                    for (int i = 0; i < samples.length; i++) {
+//                        bst.add(samples[i]);
+//                    }
+//                    startTime = System.nanoTime();
+//                    for (int k = 0; k < 1000; ++k) {
+//                        for (int i = 0; i < samples.length; i++) {
+//                            bst.removeOne(samples[i]);
+//                            bst.add(samples[i]);
+//                        }
+//                    }
+//                    endTime = System.nanoTime();
+//                    timeSaver = minTime = maxTime = totalTime = endTime - startTime;
+//
+//                    // add remove for 1000 times, run for 29 times to get an average run time
+//                    for (int j = 0; j < 29; j++) {
+//                        startTime = System.nanoTime();
+//                        for (int k = 0; k < 1000; ++k) {
+//                            for (int i = 0; i < samples.length; i++) {
+//                                bst.removeOne(samples[i]);
+//                                bst.add(samples[i]);
+//                            }
+//                        }
+//                        endTime = System.nanoTime();
+//                        timeSaver = endTime - startTime;
+//                        totalTime += timeSaver;
+//                        if (timeSaver < minTime) {
+//                            minTime = timeSaver;
+//                        }
+//                        if (timeSaver > maxTime) {
+//                            maxTime = timeSaver;
+//                        }
+//                    }
+//                    System.out.println("Binary Search Tree:");
+//                    System.out.println("minimum time taken: " + ((double)minTime) / Math.pow(10, 9) + " seconds");
+//                    System.out.println("time taken = " + ((double)totalTime) / (30 * Math.pow(10, 9)) + " sec");
+//                    System.out.println("maximum time taken: " + ((double)maxTime) / Math.pow(10, 9) + " seconds");
+//                    System.out.println("-----------------------------------------------------------------------");
+//                    //////////////////////////////////
+//                    // initial run
+//                    for (int i = 0; i < samples.length; i++) {
+//                        hash.add(samples[i]);
+//                    }
+//                    startTime = System.nanoTime();
+//                    for (int k = 0; k < 1000; ++k) {
+//                        for (int i = 0; i < samples.length; i++) {
+//                            hash.removeOne(samples[i]);
+//                            hash.add(samples[i]);
+//                        }
+//                    }
+//                    endTime = System.nanoTime();
+//                    timeSaver = minTime = maxTime = totalTime = endTime - startTime;
+//
+//                    // add remove for 1000 times, run for 29 times to get an average run time
+//                    for (int j = 0; j < 29; j++) {
+//                        startTime = System.nanoTime();
+//                        for (int k = 0; k < 1000; ++k) {
+//                            for (int i = 0; i < samples.length; i++) {
+//                                hash.removeOne(samples[i]);
+//                                hash.add(samples[i]);
+//                            }
+//                        }
+//                        endTime = System.nanoTime();
+//                        timeSaver = endTime - startTime;
+//                        totalTime += timeSaver;
+//                        if (timeSaver < minTime) {
+//                            minTime = timeSaver;
+//                        }
+//                        if (timeSaver > maxTime) {
+//                            maxTime = timeSaver;
+//                        }
+//                    }
+//                    System.out.println("Hash Map:");
+//                    System.out.println("minimum time taken: " + ((double)minTime) / Math.pow(10, 9) + " seconds");
+//                    System.out.println("time taken = " + ((double)totalTime) / (30 * Math.pow(10, 9)) + " sec");
+//                    System.out.println("maximum time taken: " + ((double)maxTime) / Math.pow(10, 9) + " seconds");
+//                    System.out.println("-----------------------------------------------------------------------");
+//                    //////////////////////////////////
+//                    // initial run
+//                    for (int i = 0; i < samples.length; i++) {
+//                        bal.add(samples[i]);
+//                    }
+//                    startTime = System.nanoTime();
+//                    for (int k = 0; k < 1000; ++k) {
+//                        for (int i = 0; i < samples.length; i++) {
+//                            bal.removeOne(samples[i]);
+//                            bal.add(samples[i]);
+//                        }
+//                    }
+//                    endTime = System.nanoTime();
+//                    timeSaver = minTime = maxTime = totalTime = endTime - startTime;
+//
+//                    // add remove for 1000 times, run for 29 times to get an average run time
+//                    for (int j = 0; j < 29; j++) {
+//                        startTime = System.nanoTime();
+//                        for (int k = 0; k < 1000; ++k) {
+//                            for (int i = 0; i < samples.length; i++) {
+//                                bal.removeOne(samples[i]);
+//                                bal.add(samples[i]);
+//                            }
+//                        }
+//                        endTime = System.nanoTime();
+//                        timeSaver = endTime - startTime;
+//                        totalTime += timeSaver;
+//                        if (timeSaver < minTime) {
+//                            minTime = timeSaver;
+//                        }
+//                        if (timeSaver > maxTime) {
+//                            maxTime = timeSaver;
+//                        }
+//                    }
+//                    System.out.println("Balanced Tree:");
+//                    System.out.println("minimum time taken: " + ((double)minTime) / Math.pow(10, 9) + " seconds");
+//                    System.out.println("time taken = " + ((double)totalTime) / (30 * Math.pow(10, 9)) + " sec");
+//                    System.out.println("maximum time taken: " + ((double)maxTime) / Math.pow(10, 9) + " seconds");
+
+                //Scenario 3 add only
+                //------------------------------------------------
+//
+//
+//                    // initial run
+//                    startTime = System.nanoTime();
+//                    for (int i = 0; i < samples.length; i++) {
+//                        doubleLinked.add(samples[i]);
+//                    }
+//                    endTime = System.nanoTime();
+//                    timeSaver = minTime = maxTime = totalTime = endTime - startTime;
+//
+//                    // run for 30 times
+//                    for (int j = 0; j < 29; j++) {
+//                        startTime = System.nanoTime();
+//                        for (int i = 0; i < samples.length; i++) {
+//                            doubleLinked.add(samples[i]);
+//                        }
+//                        endTime = System.nanoTime();
+//                        timeSaver = endTime - startTime;
+//                        totalTime += timeSaver;
+//                        if (timeSaver < minTime) {
+//                            minTime = timeSaver;
+//                        }
+//                        if (timeSaver > maxTime) {
+//                            maxTime = timeSaver;
+//                        }
+//                    }
+//
+//                    System.out.println("Double Linked List:");
+//                    System.out.println("minimum time taken: " + ((double)minTime) / Math.pow(10, 9) + " seconds");
+//                    System.out.println("time taken = " + ((double)totalTime) / (30 * Math.pow(10, 9)) + " sec");
+//                    System.out.println("maximum time taken: " + ((double)maxTime) / Math.pow(10, 9) + " seconds");
+//                    //////////////////////////////////
+////                    startTime = System.nanoTime();
+////                    // run for 30 times
+////                    for (int j = 0; j < 30; j++) {
+////                        for (int i = 0; i < samples.length; i++) {
+////                            sortedList.add(samples[i]);
+////                        }
+////                    }
+////                    endTime = System.nanoTime();
+////                    System.out.println("Sorted Linked List:");
+////                    System.out.println("time taken = " + ((double)(endTime - startTime)) / (30 * Math.pow(10, 9)) + " sec");
+//                    //////////////////////////////////
+//                    // initial run
+//                    startTime = System.nanoTime();
+//                    for (int i = 0; i < samples.length; i++) {
+//                        bst.add(samples[i]);
+//                    }
+//                    endTime = System.nanoTime();
+//                    timeSaver = minTime = maxTime = totalTime = endTime - startTime;
+//                    // run for 30 times
+//                    for (int j = 0; j < 29; j++) {
+//                        startTime = System.nanoTime();
+//                        for (int i = 0; i < samples.length; i++) {
+//                            bst.add(samples[i]);
+//                        }
+//                        endTime = System.nanoTime();
+//                        timeSaver = endTime - startTime;
+//                        totalTime += timeSaver;
+//                        if (timeSaver < minTime) {
+//                            minTime = timeSaver;
+//                        }
+//                        if (timeSaver > maxTime) {
+//                            maxTime = timeSaver;
+//                        }
+//                    }
+//                    System.out.println("Binary Search Tree:");
+//                    System.out.println("minimum time taken: " + ((double)minTime) / Math.pow(10, 9) + " seconds");
+//                    System.out.println("time taken = " + ((double)totalTime) / (30 * Math.pow(10, 9)) + " sec");
+//                    System.out.println("maximum time taken: " + ((double)maxTime) / Math.pow(10, 9) + " seconds");
+                //////////////////////////////////
+//                    // initial run
+//                    startTime = System.nanoTime();
+//                    for (int i = 0; i < samples.length; i++) {
+//                        hash.add(samples[i]);
+//                    }
+//                    endTime = System.nanoTime();
+//                    timeSaver = minTime = maxTime = totalTime = endTime - startTime;
+//                    // run for 30 times
+//                    for (int j = 0; j < 29; j++) {
+//                        startTime = System.nanoTime();
+//                        for (int i = 0; i < samples.length; i++) {
+//                            hash.add(samples[i]);
+//                        }
+//                        endTime = System.nanoTime();
+//                        timeSaver = endTime - startTime;
+//                        totalTime += timeSaver;
+//                        if (timeSaver < minTime) {
+//                            minTime = timeSaver;
+//                        }
+//                        if (timeSaver > maxTime) {
+//                            maxTime = timeSaver;
+//                        }
+//                    }
+//                    System.out.println("Hash Map:");
+//                    System.out.println("minimum time taken: " + ((double)minTime) / Math.pow(10, 9) + " seconds");
+//                    System.out.println("time taken = " + ((double)totalTime) / (30 * Math.pow(10, 9)) + " sec");
+//                    System.out.println("maximum time taken: " + ((double)maxTime) / Math.pow(10, 9) + " seconds");
+//                    //////////////////////////////////
+//                    // initial run
+//                    startTime = System.nanoTime();
+//                    for (int i = 0; i < samples.length; i++) {
+//                        doubleLinked.add(samples[i]);
+//                    }
+//                    endTime = System.nanoTime();
+//                    timeSaver = minTime = maxTime = totalTime = endTime - startTime;
+//                    // run for 30 times
+//                    for (int j = 0; j < 29; j++) {
+//                        startTime = System.nanoTime();
+//                        for (int i = 0; i < samples.length; i++) {
+//                            bal.add(samples[i]);
+//                        }
+//                        endTime = System.nanoTime();
+//                        timeSaver = endTime - startTime;
+//                        totalTime += timeSaver;
+//                        if (timeSaver < minTime) {
+//                            minTime = timeSaver;
+//                        }
+//                        if (timeSaver > maxTime) {
+//                            maxTime = timeSaver;
+//                        }
+//                    }
+//                    System.out.println("Balanced Tree:");
+//                    System.out.println("minimum time taken: " + ((double)minTime) / Math.pow(10, 9) + " seconds");
+//                    System.out.println("time taken = " + ((double)totalTime) / (30 * Math.pow(10, 9)) + " sec");
+//                    System.out.println("maximum time taken: " + ((double)maxTime) / Math.pow(10, 9) + " seconds");
+
+
+                // Scenario 2 many seach only
+                //------------------------------------------------
+                // Start linkedlist run
                 for (int i = 0; i < samples.length; i++) {
                     doubleLinked.add(samples[i]);
                 }
-                doubleLinked.search(samples[3]);
 
+                long startTime = System.nanoTime();
+
+                for (int i = 0; i < sampleSize; i++) {
+                    doubleLinked.search(samples[i]);
+                }
                 long endTime = System.nanoTime();
                 System.out.println("Double Linked List:");
                 System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
-                //////////////////////////////////
-                startTime = System.nanoTime();
 
-                for (int i = 0; i < samples.length; i++) {
-                    sortedList.add(samples[i]);
-                }
-                sortedList.search(samples[3]);
-
-                endTime = System.nanoTime();
-                System.out.println("Sorted Linked List:");
-                System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
                 //////////////////////////////////
-                startTime = System.nanoTime();
 
                 for (int i = 0; i < samples.length; i++) {
                     bst.add(samples[i]);
                 }
-                bst.search(samples[3]);
 
+                startTime = System.nanoTime();
+
+                for (int i = 0; i < sampleSize; i++) {
+                    bst.search(samples[i]);
+                }
                 endTime = System.nanoTime();
                 System.out.println("Binary Search Tree:");
                 System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
+
                 //////////////////////////////////
-                startTime = System.nanoTime();
 
                 for (int i = 0; i < samples.length; i++) {
                     hash.add(samples[i]);
                 }
-                hash.search(samples[3]);
 
+                startTime = System.nanoTime();
+
+                for (int i = 0; i < sampleSize; i++) {
+                    hash.search(samples[i]);
+                }
                 endTime = System.nanoTime();
                 System.out.println("Hash Map:");
                 System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
+
                 //////////////////////////////////
-                startTime = System.nanoTime();
 
                 for (int i = 0; i < samples.length; i++) {
                     bal.add(samples[i]);
                 }
-                bal.search(samples[3]);
+                startTime = System.nanoTime();
 
+                for (int i = 0; i < sampleSize; i++) {
+                    bal.search(samples[i]);
+                }
                 endTime = System.nanoTime();
                 System.out.println("Balanced Tree:");
                 System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
+
+                //////////////////////////////////
+
+                for (int i = 0; i < samples.length; i++) {
+                    sortedList.add(samples[i]);
+                }
+                sortedList.sort(sortedList.mHead);
+                startTime = System.nanoTime();
+
+                for (int i = 0; i < sampleSize; i++) {
+                    sortedList.search(samples[i]);
+                }
+                endTime = System.nanoTime();
+                System.out.println("Sorted Linked List:");
+                System.out.println("time taken = " + ((double)(endTime - startTime)) / Math.pow(10, 9) + " sec");
+
+                // Scenario 1 many add many remove and many search
+                //------------------------------------------------
+//                    // Start Double Linked List remove Only run
+//                    for (int i = 0; i < samples.length; i++) {
+//                        doubleLinked.add(samples[i]);
+//                    }
+//                    long startTime = System.nanoTime();
+//                    // run for 30 times
+//                    for (int j = 0; j < 3000; j++) {
+//                        for (int i = 0; i < samples.length; i++) {
+//
+//                            doubleLinked.add(samples[i]);
+//                        }
+//                        doubleLinked.removeAll(samples[1]);
+//                    }
+//                    long endTime = System.nanoTime();
+//                    System.out.println("Double Linked List:");
+//                    System.out.println("time taken = " + ((double) (endTime - startTime)) / (30 * Math.pow(10, 9)) + " sec");
+//                    //////////////////////////////////
+////                startTime = System.nanoTime();
+////                // run for 30 times
+////                for (int j = 0; j < 30; j++) {
+////                    for (int i = 0; i < samples.length; i++) {
+////                        sortedList.add(samples[i]);
+////                    }
+//////                    sortedList.removeOne(samples[2]);
+//////                    sortedList.removeAll(samples[3]);
+////                }
+////                sortedList.search(samples[3]);
+////                endTime = System.nanoTime();
+////                System.out.println("Sorted Linked List:");
+////                System.out.println("time taken = " + ((double)(endTime - startTime)) / (30 * Math.pow(10, 9)) + " sec");
+//                    //////////////////////////////////
+//                    for (int i = 0; i < samples.length; i++) {
+//                        bst.add(samples[i]);
+//                    }
+//                    startTime = System.nanoTime();
+//                    for (int j = 0; j < 3000; j++) {
+//                        for (int i = 0; i < samples.length; i++) {
+//
+//                            bst.add(samples[i]);
+//                        }
+//                        bst.removeAll(samples[1]);
+//                    }
+//                    endTime = System.nanoTime();
+//                    System.out.println("Binary Search Tree:");
+//                    System.out.println("time taken = " + ((double) (endTime - startTime)) / (30 * Math.pow(10, 9)) + " sec");
+//                    //////////////////////////////////
+//                    for (int i = 0; i < samples.length; i++) {
+//                        hash.add(samples[i]);
+//                    }
+//                    startTime = System.nanoTime();
+//                    for (int j = 0; j < 3000; j++) {
+//                        for (int i = 0; i < samples.length; i++) {
+//                            hash.add(samples[i]);
+//                        }
+//                        hash.removeAll(samples[1]);
+//                    }
+//                    endTime = System.nanoTime();
+//                    System.out.println("Hash Map:");
+//                    System.out.println("time taken = " + ((double) (endTime - startTime)) / (30 * Math.pow(10, 9)) + " sec");
+//                    //////////////////////////////////
+//                    for (int i = 0; i < samples.length; i++) {
+//                        bal.add(samples[i]);
+//                    }
+//                    startTime = System.nanoTime();
+//                    for (int j = 0; j < 3000; j++) {
+//                        for (int i = 0; i < samples.length; i++) {
+//
+//                            bal.add(samples[i]);
+//                        }
+//                        bal.removeAll(samples[1]);
+//                    }
+//                    endTime = System.nanoTime();
+//                    System.out.println("Balanced Tree:");
+//                    System.out.println("time taken = " + ((double) (endTime - startTime)) / (30 * Math.pow(10, 9)) + " sec");
             }
         }
-		catch (Exception e) {
+        catch (Exception e) {
             System.err.println(e.getMessage());
             usage();
         }
